@@ -1,15 +1,14 @@
 angular
-  .module('sftw')
-  .factory('mapResource', function mapResourceFactory($http) {
+  .module('sftw.resources', [])
+  .factory('mapResource', function mapResourceFactory($http, ApiEndpoint) {
 
-    var NOTIFICATION_BASE_URL = '/lastlocation';
     var HTTP_CONFIG = {
       timeout: 10000
     };
 
     var getLastLocation = function () {
       return $http.get(
-        'http://sftw.be/lastlocation.last.json',
+        ApiEndpoint.url + '/lastlocation/last.json',
         HTTP_CONFIG
       );
     };

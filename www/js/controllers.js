@@ -1,32 +1,14 @@
 angular.module('sftw.controllers', [])
 
-  .controller('MapCtrl', function ($scope, $ionicLoading, $http, ApiEndpoint) {
-    $scope.mapCreated = function (map) {
+  .controller('MapCtrl', function ($scope, $ionicLoading, $http, $interval, mapResource) {
+
+    $scope.initializeMap = function (map) {
       $scope.map = map;
       $scope.markers = [];
       $scope.centerOnLastLocation();
-    };
-
-    $scope.centerOnMe = function () {
-      if (!$scope.map) {
-        return;
-      }
-
-      $scope.loading = $ionicLoading.show({
-        content: 'Getting current location...',
-        showBackdrop: false
-      });
-
-      navigator.geolocation.getCurrentPosition(function (pos) {
-        $scope.map.setCenter(new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude));
-        $scope.loading.hide();
-      }, function (error) {
-        alert('Unable to get location: ' + error.message);
-      });
-    };
-
-    var HTTP_CONFIG = {
-      timeout: 10000
+      $interval(function () {
+        $scope.centerOnLastLocation();
+      }, 120000);
     };
 
     $scope.centerOnLastLocation = function () {
@@ -41,11 +23,11 @@ angular.module('sftw.controllers', [])
         showBackdrop: false
       });
 
-      $http.get(ApiEndpoint.url + "/lastlocation/last.json", HTTP_CONFIG)
+      mapResource.getLastLocation()
         .success(function (data) {
           var parts = data[0].Latitude.split(/[^\d\w\.]+/);
           var lat = ConvertDMSToDD(parts[0], parts[1], parts[2], parts[3]);
-          var parts = data[0].Longitude.split(/[^\d\w\.]+/);
+          parts = data[0].Longitude.split(/[^\d\w\.]+/);
           var lng = ConvertDMSToDD(parts[0], parts[1], parts[2], parts[3]);
           latLng = new google.maps.LatLng(lat, lng);
           $scope.map.setCenter(latLng);
@@ -99,9 +81,9 @@ angular.module('sftw.controllers', [])
     }
 
 // Deletes all markers in the array by removing references to them.
-    $scope.deleteMarkers = function() {
+    $scope.deleteMarkers = function () {
       clearMarkers();
       $scope.markers = [];
-    }
+    };
 
   });

@@ -1,4 +1,4 @@
-angular.module('sftw', ['ionic', 'sftw.controllers', 'sftw.directives'])
+angular.module('sftw', ['ionic', 'sftw.controllers', 'sftw.directives', 'sftw.services', 'sftw.resources'])
   .constant('ApiEndpoint', {
     url: 'http://localhost:8100/api'
   })
@@ -27,6 +27,5 @@ angular.module('sftw', ['ionic', 'sftw.controllers', 'sftw.directives'])
             });
         }
       }
-
     });
-  })
+  });
