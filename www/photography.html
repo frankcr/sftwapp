@@ -1,0 +1,24 @@
+<ion-view title="Photo albums">
+  <ion-nav-buttons side="left">
+    <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
+  </ion-nav-buttons>
+  <ion-content>
+    <md-content class="md-padding">
+      <div ng-repeat="album in albums">
+        <md-card>
+          <img ng-src="{{album.mobileImages[0]}}" class="md-card-image" alt="Washed Out">
+          <md-card-content>
+            <h2 class="md-title">{{album.title}}</h2>
+          </md-card-content>
+          <div class="md-actions" layout="row" layout-align="end center">
+            <md-button>Action 1</md-button>
+            <md-button>Action 2</md-button>
+          </div>
+        </md-card>
+        <br>
+
+      </div>
+    </md-content>
+  </ion-content>
+
+</ion-view>

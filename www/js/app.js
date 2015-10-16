@@ -1,4 +1,4 @@
-angular.module('sftw', ['ionic', 'sftw.controllers', 'sftw.directives', 'sftw.services', 'sftw.resources'])
+angular.module('sftw', ['ionic', 'sftw.controllers', 'sftw.directives', 'sftw.services', 'sftw.resources', 'ngMaterial'])
   .constant('ApiEndpoint', {
     url: 'http://localhost:8100/api'
   })
@@ -28,4 +28,41 @@ angular.module('sftw', ['ionic', 'sftw.controllers', 'sftw.directives', 'sftw.se
         }
       }
     });
+  }).config(function($stateProvider, $urlRouterProvider) {
+    $stateProvider
+
+      .state('app', {
+        url: "/app",
+        abstract: true,
+        templateUrl: "../menu.html",
+        controller: 'AppCtrl'
+      })
+
+      .state('app.map', {
+        url: "/map",
+        views: {
+          'menuContent' :{
+            templateUrl: "../map.html",
+            controller: 'MapCtrl'
+          }
+        }
+      }).state('app.photography', {
+        url: "/photography",
+        views: {
+          'menuContent' :{
+            templateUrl: "../photography.html",
+            controller: 'PhotographyCtrl'
+          }
+        }
+      }).state('app.settings', {
+        url: "/settings",
+        views: {
+          'menuContent' :{
+            templateUrl: "../settings.html",
+            controller: 'SettingsCtrl'
+          }
+        }
+      });
+    // if none of the above states are matched, use this as the fallback
+    $urlRouterProvider.otherwise('/app/map');
   });
