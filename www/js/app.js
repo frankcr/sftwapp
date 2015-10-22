@@ -35,7 +35,7 @@ angular.module('sftw', ['ionic', 'sftw.controllers', 'sftw.directives', 'sftw.se
       .state('app', {
         url: "/app",
         abstract: true,
-        templateUrl: "menu.html",
+        templateUrl: "templates/components/menu.html",
         controller: 'AppCtrl'
       })
 
@@ -43,7 +43,7 @@ angular.module('sftw', ['ionic', 'sftw.controllers', 'sftw.directives', 'sftw.se
         url: "/map",
         views: {
           'menuContent': {
-            templateUrl: "map.html",
+            templateUrl: "templates/screens/map.html",
             controller: 'MapCtrl'
           }
         }
@@ -51,7 +51,7 @@ angular.module('sftw', ['ionic', 'sftw.controllers', 'sftw.directives', 'sftw.se
         url: "/photography",
         views: {
           'menuContent': {
-            templateUrl: "photography.html",
+            templateUrl: "templates/screens/photography.html",
             controller: 'PhotographyCtrl'
           }
         }
@@ -59,7 +59,7 @@ angular.module('sftw', ['ionic', 'sftw.controllers', 'sftw.directives', 'sftw.se
         url: "/settings",
         views: {
           'menuContent': {
-            templateUrl: "settings.html",
+            templateUrl: "templates/screens/settings.html",
             controller: 'SettingsCtrl'
           }
         }

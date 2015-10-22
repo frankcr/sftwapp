@@ -16,7 +16,7 @@ angular.module('sftw.controllers', [])
   })
   .controller('SettingsCtrl', function ($scope) {
   })
-  .controller('MapCtrl', function ($scope, $ionicLoading, $http, $interval, mapResource, $ionicSideMenuDelegate) {
+  .controller('MapCtrl', function ($scope, $ionicLoading, $http, $interval, mapResource, $ionicSideMenuDelegate, $ionicActionSheet) {
 
     var isLocating = false;
     var id;
@@ -41,12 +41,14 @@ angular.module('sftw.controllers', [])
     var initializeWithDefaults = function (map) {
       $scope.map = map;
       $scope.markers = [];
+      $scope.destinations = [];
     };
 
     var initializeFromLocalStorage = function () {
       lastSuccessfulLocationSent = getLastSuccessfulLocationSentFromLocalStorage();
       lastSuccessfulLocationGet = getLastSuccessfulLocationGetFromLocalStorage();
       lastSuccessfulDestinationsGet = getLastSuccessfulDestinationGetFromLocalStorage();
+      $scope.destinations = getDestinationsFromLocalStorage();
       $scope.centerOnLastLocationFromLocalStorage();
     };
 
@@ -140,6 +142,7 @@ angular.module('sftw.controllers', [])
       if (getCurrentTimestamp() - getLastSuccessfulDestinationsGet() > ONEDAY) {
         mapResource.getDestinations()
           .success(function (destinations) {
+            $scope.destinations = destinations;
             addToLocalStorage('DESTINATIONS', destinations);
             addToLocalStorage('LASTSUCCESSFULLDESTINATIONSGET', getCurrentTimestamp());
             lastSuccessfulDestinationsGet = getCurrentTimestamp();
@@ -218,10 +221,51 @@ angular.module('sftw.controllers', [])
       $scope.markers = [];
     };
 
+    $scope.startTrip = function (destinationId) {
+      if (!isLocating) {
+        console.log('id: ' + destinationId);
+        isLocating = true;
+        mapResource.startTrip(destinationId).success(function (respons) {
+          $scope.startLocating();
+        }).error(function (error) {
+          isLocating = false;
+          //TODO alert
+        });
+      }
+    };
+
+    $scope.showDestinationsPopup = function () {
+
+      var buttons = [{text: 'Resume last trip'}];
+      $scope.destinations.forEach(function (destination) {
+        buttons.push({text: destination.Titel});
+      });
+      // Show the action sheet
+      var hideSheet = $ionicActionSheet.show({
+        buttons: buttons,
+        titleText: 'Choose your destination',
+        cancelText: 'Cancel',
+        cancel: function () {
+          // do nothing
+        },
+        buttonClicked: function (index) {
+          if (index !== 0) {
+            console.log($scope.destinations[index-1].Id);
+            $scope.startTrip($scope.destinations[index - 1].Id);
+          }
+          return true;
+        }
+      });
+    };
+
+    $scope.stopTrip = function () {
+      $scope.stopLocating();
+    };
+
     $scope.startLocating = function () {
       //cordova.plugins.backgroundMode.enable();
       lastSent = 0;
-      isLocating = true;
+
       console.log('test start location');
       id = navigator.geolocation.watchPosition(function (location) {/*success*/
         if (getCurrentTimestamp() - lastSent > ONEMINUTE) {

@@ -29,10 +29,20 @@ angular
       );
     };
 
+    var startTrip = function (destination) {
+      var data = {destination: destination};
+      return $http.post(
+        ApiEndpoint.url + '/starttrip',
+        JSON.stringify(data),
+        HTTP_CONFIG
+      );
+    };
+
     return {
       getLastLocation: getLastLocation,
       sendLocation: sendLocation,
-      getDestinations: getDestinations
+      getDestinations: getDestinations,
+      startTrip: startTrip
     };
   })
   .factory('photographyResource', function photographyResourceFactory($http, ApiEndpoint) {

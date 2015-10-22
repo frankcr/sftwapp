@@ -1,0 +1,21 @@
+<ion-view title="Where is somfortiwan?">
+  <ion-nav-buttons side="left">
+    <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
+  </ion-nav-buttons>
+  <ion-content>
+    <div class="lastSent">
+      <p>Last sent: {{getLastSuccessfulLocationSentDate()}}</p>
+
+      <p>Last get: {{getLastSuccessfulLocationGetDate()}}</p>
+
+      <p>Last destinations: {{getLastSuccessfulDestionationsGetDate()}}</p>
+    </div>
+    <map on-create="initializeMap(map)"></map>
+  </ion-content>
+  <ion-footer-bar class="bar-stable">
+    <a ng-click="centerOnLastLocation()" class="button button-icon icon ion-refresh"></a>
+    <a ng-click="showDestinationsPopup()" class="button button-icon icon ion-android-locate" ng-if="!isLocating()"></a>
+    <a ng-click="stopTrip()" class="button button-icon icon ion-stop" ng-if="isLocating()"></a>
+  </ion-footer-bar>
+
+</ion-view>
