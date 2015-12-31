@@ -21,7 +21,13 @@ angular
     };
 
     var sendLocation = function (location) {
-      var data = {location: {longitude: location.latitude, latitude: location.longitude, title: 'Test sending new app'}};
+      var data = {
+        location: {
+          longitude: location.longitude,
+          latitude: location.latitude,
+          title: 'Test sending new app'
+        }
+      };
       return $http.post(
         ApiEndpoint.url + '/whereami',
         JSON.stringify(data),
@@ -68,6 +74,25 @@ angular
     return {
       getPhotoAlbums: getPhotoAlbums,
       getAllImages: getAllImages
+    };
+  })
+  .factory('loginResource', function loginResourceFactory($http, ApiEndpoint) {
+
+    var HTTP_CONFIG = {
+      timeout: 10000
+    };
+
+    var doLogin = function (username, password) {
+      var data = {username: username, password: password}
+      return $http.post(
+        ApiEndpoint.url + '/rest/users/login/',
+        data,
+        HTTP_CONFIG
+      );
+    };
+
+    return {
+      doLogin: doLogin
     };
   });
 

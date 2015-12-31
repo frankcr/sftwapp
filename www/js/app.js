@@ -63,6 +63,15 @@ angular.module('sftw', ['ionic', 'sftw.controllers', 'sftw.directives', 'sftw.se
             controller: 'SettingsCtrl'
           }
         }
+      })
+      .state('app.login', {
+        url: "/settings/login",
+        views: {
+          'menuContent': {
+            templateUrl: "templates/screens/login.html",
+            controller: 'LoginCtrl'
+          }
+        }
       });
     //   if none of the above states are matched, use this as the fallback
     $urlRouterProvider.otherwise('/app/map');

@@ -16,6 +16,45 @@ angular.module('sftw.controllers', [])
   })
   .controller('SettingsCtrl', function ($scope) {
   })
+  .controller('LoginCtrl', function ($scope, loginResource) {
+    $scope.data = {};
+
+    //TODO duplicate code, extract
+    var addToLocalStorage = function (key, value) {
+      window.localStorage['SFTW-' + key] = JSON.stringify(value);
+    };
+
+    //TODO create service for this:
+    //http://learn.ionicframework.com/formulas/localstorage/
+    var getFromLocalStorage = function (key, defaultValue) {
+      return JSON.parse(window.localStorage['SFTW-' + key] || JSON.stringify(defaultValue));
+    };
+
+    //TODO end duplicate code
+
+    $scope.isLoggedIn = function () {
+      return getFromLocalStorage('ISLOGGEDIN', false);
+    };
+
+    $scope.login = function () {
+      console.log("LOGIN user: " + $scope.data.username + " - PW: " + $scope.data.password);
+      loginResource.doLogin($scope.data.username, $scope.data.password).success(function (data) {
+        addToLocalStorage('USER', data);
+        addToLocalStorage('ISLOGGEDIN', true);
+
+      }).error(function (status, data) {
+
+        console.log('status: ' + status + ' data: ' + data);
+      });
+    };
+
+    $scope.logout = function () {
+      //remove from localStorage
+      addToLocalStorage('USER', null);
+      addToLocalStorage('ISLOGGEDIN', false);
+      $scope.data = {};
+    }
+  })
   .controller('MapCtrl', function ($scope, $ionicLoading, $http, $interval, mapResource, $ionicSideMenuDelegate, $ionicActionSheet) {
 
     var isLocating = false;
@@ -234,6 +273,13 @@ angular.module('sftw.controllers', [])
       }
     };
 
+    $scope.resumeTrip = function () {
+      if (!isLocating) {
+        isLocating = true;
+        $scope.startLocating();
+      }
+    };
+
     $scope.showDestinationsPopup = function () {
 
       var buttons = [{text: 'Resume last trip'}];
@@ -250,8 +296,10 @@ angular.module('sftw.controllers', [])
         },
         buttonClicked: function (index) {
           if (index !== 0) {
-            console.log($scope.destinations[index-1].Id);
+            console.log($scope.destinations[index - 1].Id);
             $scope.startTrip($scope.destinations[index - 1].Id);
+          } else {
+            $scope.resumeTrip();
           }
           return true;
         }
@@ -270,7 +318,6 @@ angular.module('sftw.controllers', [])
       id = navigator.geolocation.watchPosition(function (location) {/*success*/
         if (getCurrentTimestamp() - lastSent > ONEMINUTE) {
           lastSent = new Date().getTime();
-
           mapResource.sendLocation(location.coords).success(function (respons) {
             console.log('success');
             lastSuccessfulLocationSent = getCurrentTimestamp();
